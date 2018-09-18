@@ -14,11 +14,16 @@
         </div>
         <div v-for="(el, indexCol) in mapRow" 
           class="map-cell-frame" 
-          contenteditable="true"
           :id="'map-' + indexRow + '-' + indexCol" 
           :key="'map-' + indexRow + '-' + indexCol" 
           :style="{backgroundColor: 'hsl('+ (255 - (((el > 250 ? 250 : el) * (250 - 0)) / (maxVal - minVal))) +' , 60%, 60%)'}">
-            <input class="map-table-cell" type="text" v-model="fuelMap[indexRow][indexCol]">
+            <vue-numeric class="map-table-cell" type="text" 
+              v-model="fuelMap[indexRow][indexCol]"
+              v-bind:min="minVal" 
+              v-bind:max="maxVal"
+              :empty-value="minVal"
+              >
+            </vue-numeric>
         </div>
       </div>
   </div>

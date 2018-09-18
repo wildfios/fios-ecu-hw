@@ -3,8 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VueNumeric from 'vue-numeric'
 
 Vue.config.productionTip = false
+Vue.use(VueNumeric)
 
 /* eslint-disable no-new */
 new Vue({
