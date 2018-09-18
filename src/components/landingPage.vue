@@ -9,7 +9,7 @@
 import MapTable from './mapTable.vue'
 
 export default {
-  name: 'HelloWorld',
+  name: 'landing-page',
   components: {
     MapTable,
   },
