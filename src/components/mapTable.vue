@@ -70,8 +70,7 @@ export default {
       ]
     };
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 
@@ -95,7 +94,7 @@ export default {
   border-left: 1px solid gray;
   border-bottom: 1px solid black;
   display: inline-block;
-  float: left;
+  width: 42px;
   border-radius: 3px;
 }
 
@@ -104,15 +103,14 @@ export default {
   background-color: floralwhite;
 }
 
-.map-outer-
-frame {
+.map-outer- frame {
   border: 2px #4b4b4b solid;
   display: inline-block;
   border-radius: 6px;
 }
 
 .map-col-desc {
-  width: 44px;
+  width: 42px;
   background-color: floralwhite;
 }
 
