@@ -4,11 +4,11 @@
         <div class="map-cell-frame scale">
           <div class="map-row-desc">{{scaleText}}</div>
         </div>
-        <div v-for="(el, indexCol) in fuelMap[0]" class="map-cell-frame">
+        <div v-for="(el, indexCol) in mapData[0]" class="map-cell-frame">
           <div class="map-col-desc">{{axisValX.start + (indexCol * axisValX.step) + axisValX.postfix}}</div>
         </div>
       </div>
-      <div v-for="(mapRow, indexRow) in fuelMap" class="map-table-row" :key="'key-' + indexRow">
+      <div v-for="(mapRow, indexRow) in mapData" class="map-table-row" :key="'key-' + indexRow">
         <div class="map-cell-frame scale">
           <div class="map-row-desc">{{axisValY.start + (indexRow * axisValY.step) + axisValY.postfix}}</div>
         </div>
@@ -16,9 +16,9 @@
           class="map-cell-frame" 
           :id="'map-' + indexRow + '-' + indexCol" 
           :key="'map-' + indexRow + '-' + indexCol" 
-          :style="{backgroundColor: 'hsl('+ (255 - (((el > 250 ? 250 : el) * (250 - 0)) / (maxVal - minVal))) +' , 60%, 60%)'}">
+          :style="{backgroundColor: 'hsl('+ (250 - (el * (250 / (maxVal - minVal)))) +' , 100%, 65%)'}">
             <vue-numeric class="map-table-cell" type="text" 
-              v-model="fuelMap[indexRow][indexCol]"
+              v-model="mapData[indexRow][indexCol]"
               v-bind:min="minVal" 
               v-bind:max="maxVal"
               :empty-value="minVal"
@@ -33,41 +33,9 @@
 /* eslint-disable */
 export default {
   name: 'map-table',
+  props: ['scaleText', 'axisValX', 'axisValY', 'minVal', 'maxVal', 'mapData'],
   data() {
     return {
-      scaleText: 'RPM/LOAD',
-      axisValX: {
-        start: 0,
-        step: 10,
-        postfix: '%'
-      },
-      axisValY: {
-        start: 800,
-        step: 400,
-        postfix: ' rpm'
-      },
-      minVal: 0,
-      maxVal: 250,
-      fuelMap: [
-        [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 123, 312, 312, 3, 123, 123],
-        [100, 200, 300, 123, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 123, 12, 312, 312, 3, 123],
-        [100, 200, 23, 123, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 123, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 123, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
-        [100, 300, 23, 123, 123, 12, 312, 312, 3, 123, 123],
-        [500, 600, 700, 23, 123, 123, 12, 312, 3, 123, 123],
-        [100, 200, 23, 123, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 123, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 123, 312, 312, 3, 123, 123],
-        [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
-        [100, 300, 23, 123, 123, 12, 312, 312, 3, 123, 123],
-        [500, 600, 700, 23, 123, 123, 12, 312, 3, 123, 123]
-      ]
     };
   },
   methods: {}
@@ -83,7 +51,7 @@ export default {
   background: inherit;
   border: none;
   color: black;
-  width: 42px;
+  width: 41px;
   text-align: center;
   font-weight: bold;
   text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,

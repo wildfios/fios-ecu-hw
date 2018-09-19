@@ -28,12 +28,12 @@ export default {
     onDragStart(event) {
       this.leftPosStart = event.clientX;
       this.topPosStart = event.clientY;
-      event.preventDefault();
+      //event.preventDefault();
       this.clicked = true;
     },
     onDrag(event) {
       if (this.clicked) {
-        event.preventDefault();
+        //event.preventDefault();
         let pos1 = this.leftPosStart - event.clientX;
         let pos2 = this.topPosStart - event.clientY;
         this.leftPosStart = event.clientX;
