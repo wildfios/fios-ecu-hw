@@ -4,11 +4,11 @@
         <div class="map-cell-frame scale">
           <div class="map-row-desc">{{scaleText}}</div>
         </div>
-        <div v-for="(el, indexCol) in mapData[0]" class="map-cell-frame">
+        <div v-for="(el, indexCol) in mapData[0]" class="map-cell-frame" :key="'key-col-' + indexCol">
           <div class="map-col-desc">{{axisValX.start + (indexCol * axisValX.step) + axisValX.postfix}}</div>
         </div>
       </div>
-      <div v-for="(mapRow, indexRow) in mapData" class="map-table-row" :key="'key-' + indexRow">
+      <div v-for="(mapRow, indexRow) in mapData" class="map-table-row" :key="'key-row-' + indexRow">
         <div class="map-cell-frame scale">
           <div class="map-row-desc">{{axisValY.start + (indexRow * axisValY.step) + axisValY.postfix}}</div>
         </div>
@@ -17,13 +17,13 @@
           :id="'map-' + indexRow + '-' + indexCol" 
           :key="'map-' + indexRow + '-' + indexCol" 
           :style="{backgroundColor: 'hsl('+ (250 - (el * (250 / (maxVal - minVal)))) +' , 100%, 65%)'}">
-            <vue-numeric class="map-table-cell" type="text" 
+            <input 
+              class="map-table-cell" 
+              type="text" 
               v-model="mapData[indexRow][indexCol]"
-              v-bind:min="minVal" 
-              v-bind:max="maxVal"
-              :empty-value="minVal"
-              >
-            </vue-numeric>
+              v-on:keydown="noKeyDown($event)"
+              v-on:keyup="validateFld($event, indexRow, indexCol)"
+            >
         </div>
       </div>
   </div>
@@ -33,12 +33,44 @@
 /* eslint-disable */
 export default {
   name: 'map-table',
-  props: ['scaleText', 'axisValX', 'axisValY', 'minVal', 'maxVal', 'mapData'],
-  data() {
-    return {
-    };
+  props: {
+    scaleText: String,
+    axisValX: Object,
+    axisValY: Object,
+    minVal: Number,
+    maxVal: Number,
+    mapData: Array
   },
-  methods: {}
+  data() {
+    return {};
+  },
+  methods: {
+    getAscii(a) {
+      return a.charCodeAt(0);
+    },
+    noKeyDown(e) {
+      if (
+        (this.getAscii(e.key) > 0x29 && this.getAscii(e.key) < 0x3a) ||
+        'ArrowLeft' == e.key ||
+        'Delete' == e.key ||
+        'ArrowRight' == e.key ||
+        'Backspace' == e.key
+      ) {
+        return;
+      }
+      e.preventDefault();
+    },
+    validateFld(e, row, col) {
+      let val = e.path[0].value;
+      if (val > this.maxVal) {
+        this.mapData[row][col] = this.maxVal;
+      } else if (val < this.minVal) {
+        this.mapData[row][col] = this.minVal;
+      } else if (val == '') {
+        this.mapData[row][col] = this.minVal;
+      }
+    }
+  }
 };
 </script>
 

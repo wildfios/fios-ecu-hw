@@ -1,16 +1,17 @@
 <template>
   <div>
     <h1 v-on:click="updateData()">{{msg}}</h1>
-    <modal-window>
+    <!-- <modal-window>
+    </modal-window>v-if="mapReady" -->
       <map-table 
         :scale-text="scaleText"
         :axis-val-x="axisValX"
         :axis-val-y="axisValY"
         :min-val="minVal"
         :max-val="maxVal"
-        :map-data="mapData"
+        :map-data="fuelMap"
       ></map-table>
-    </modal-window>
+      <button v-on:click="increment()">increment</button>
   </div>
 </template>
 
@@ -24,10 +25,11 @@ export default {
     MapTable,
     modalWindow
   },
-  data: () => {
+  data() {
     return {
-      msg: 'Fuel map',
+      mapReady: false,
       scaleText: 'RPM/LOAD',
+      msg: 'Fuel map',
       axisValX: {
         start: 0,
         step: 10,
@@ -39,8 +41,8 @@ export default {
         postfix: ' rpm'
       },
       minVal: 0,
-      maxVal: 30,
-      mapData: [
+      maxVal: 25,
+      fuelMap: [
         [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
         [100, 200, 300, 23, 123, 123, 312, 312, 3, 123, 123],
         [100, 200, 300, 123, 123, 12, 312, 312, 3, 123, 123],
@@ -58,24 +60,28 @@ export default {
         [100, 200, 300, 23, 123, 123, 312, 312, 3, 123, 123],
         [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
         [100, 300, 23, 123, 123, 12, 312, 312, 3, 123, 123],
+        [500, 600, 700, 23, 123, 123, 12, 312, 3, 123, 123],
         [500, 600, 700, 23, 123, 123, 12, 312, 3, 123, 123]
       ]
     };
   },
-  created: () => {
-
-  },
   methods: {
+    setMapData(i, j, data) {
+      this.$set(this.fuelMap[i], j, data);
+    },
     updateData() {
-      var x = 1, y = 1;
-      for (var i = 0; i < this.mapData.length; i ++) {
+      var x = 1,
+        y = 1;
+      for (var i = 0; i < this.fuelMap.length; i++) {
         x += 0.1;
-        for (var j = 0; j < this.mapData[0].length; j ++) {
+        for (var j = 0; j < this.fuelMap[0].length; j++) {
           y += 0.1;
-          this.mapData[i][j] = x + y;
+          this.setMapData(i, j, Math.floor(x + y));
         }
       }
-      console.log('strange')
+    },
+    increment() {
+      this.setMapData(3, 3, Math.floor(Math.random() * 100));
     }
   }
 };
