@@ -10,6 +10,8 @@
         :min-val="minVal"
         :max-val="maxVal"
         :map-data="fuelMap"
+        :hi-light-cel="val"
+        @change="onChange($event)"
       ></map-table>
       <button v-on:click="increment()">increment</button>
   </div>
@@ -30,6 +32,7 @@ export default {
       mapReady: false,
       scaleText: 'RPM/LOAD',
       msg: 'Fuel map',
+      val: 's',
       axisValX: {
         start: 0,
         step: 10,
@@ -42,6 +45,7 @@ export default {
       },
       minVal: 0,
       maxVal: 25,
+      
       fuelMap: [
         [100, 200, 300, 23, 123, 12, 312, 312, 3, 123, 123],
         [100, 200, 300, 23, 123, 123, 312, 312, 3, 123, 123],
@@ -80,8 +84,12 @@ export default {
         }
       }
     },
+    onChange(e) {
+      console.log(e)
+    },
     increment() {
       this.setMapData(3, 3, Math.floor(Math.random() * 100));
+      this.val = Math.floor(Math.random() * 10) + '-' + Math.floor(Math.random() * 10);
     }
   }
 };

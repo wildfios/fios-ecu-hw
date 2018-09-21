@@ -2,26 +2,41 @@
   <div class="map-outer-frame">
       <div class="map-table-row">
         <div class="map-cell-frame scale">
-          <div class="map-row-desc">{{scaleText}}</div>
+          <div class="map-row-desc">
+            {{scaleText}}
+          </div>
         </div>
-        <div v-for="(el, indexCol) in mapData[0]" class="map-cell-frame" :key="'key-col-' + indexCol">
-          <div class="map-col-desc">{{axisValX.start + (indexCol * axisValX.step) + axisValX.postfix}}</div>
+        <div v-for="(el, indexCol) in mapData[0]" 
+            class="map-cell-frame" 
+            :key="'key-col-' + indexCol"
+            :id="'map-col-' + indexCol"
+          >
+          <div class="map-col-desc">
+            {{axisValX.start + (indexCol * axisValX.step) + axisValX.postfix}}
+          </div>
         </div>
       </div>
-      <div v-for="(mapRow, indexRow) in mapData" class="map-table-row" :key="'key-row-' + indexRow">
-        <div class="map-cell-frame scale">
-          <div class="map-row-desc">{{axisValY.start + (indexRow * axisValY.step) + axisValY.postfix}}</div>
+      <div v-for="(mapRow, indexRow) in mapData" 
+          class="map-table-row" 
+          :key="'key-row-' + indexRow"
+        >
+        <div class="map-cell-frame scale"
+          :id="'map-row-' + indexRow"
+        >
+          <div class="map-row-desc">
+            {{axisValY.start + (indexRow * axisValY.step) + axisValY.postfix}}
+          </div>
         </div>
         <div v-for="(el, indexCol) in mapRow" 
           class="map-cell-frame" 
-          :id="'map-' + indexRow + '-' + indexCol" 
+          :id="'map' + indexRow + '-' + indexCol" 
           :key="'map-' + indexRow + '-' + indexCol" 
           :style="{backgroundColor: 'hsl('+ (250 - (el * (250 / (maxVal - minVal)))) +' , 100%, 65%)'}">
             <input 
               class="map-table-cell" 
-              type="text" 
+              type="text"
               v-model="mapData[indexRow][indexCol]"
-              v-on:keydown="noKeyDown($event)"
+              v-on:keydown="noKeyDown($event, indexRow, indexCol)"
               v-on:keyup="validateFld($event, indexRow, indexCol)"
             >
         </div>
@@ -39,29 +54,56 @@ export default {
     axisValY: Object,
     minVal: Number,
     maxVal: Number,
+    hiLightCel: String,
     mapData: Array
   },
   data() {
     return {};
   },
+  watch: {
+    hiLightCel: function(newCel, oldCel) {
+      let newEl = document.getElementById('map' + newCel);
+      let oldEl = document.getElementById('map' + oldCel);
+      let coordsNew = newCel.split('-');
+      let coordsOld = oldCel.split('-');
+      if (oldEl != null) {
+        oldEl.classList.remove('active-cell');
+        document.getElementById('map-row-' + coordsOld[0]).classList.remove('active-cell')
+        document.getElementById('map-col-' + coordsOld[1]).classList.remove('active-cell')
+      }
+      if (newEl != null) {
+        newEl.classList.add('active-cell');
+        document.getElementById('map-col-' + coordsNew[1]).classList.add('active-cell')
+        document.getElementById('map-row-' + coordsNew[0]).classList.add('active-cell')
+      }
+    }
+  },
   methods: {
     getAscii(a) {
       return a.charCodeAt(0);
     },
-    noKeyDown(e) {
+    noKeyDown(event, x, y) {
       if (
-        (this.getAscii(e.key) > 0x29 && this.getAscii(e.key) < 0x3a) ||
-        'ArrowLeft' == e.key ||
-        'Delete' == e.key ||
-        'ArrowRight' == e.key ||
-        'Backspace' == e.key
+        (this.getAscii(event.key) > 0x29 && this.getAscii(event.key) < 0x3a) ||
+        'ArrowLeft' == event.key ||
+        'Delete' == event.key ||
+        'ArrowRight' == event.key ||
+        'Backspace' == event.key
       ) {
         return;
       }
-      e.preventDefault();
+      if ('Enter' == event.key) {
+        this.$emit('change', {
+            value: event.target.value,
+            cordX: x,
+            cordY: y
+          });
+        return;
+      }
+      event.preventDefault();
     },
     validateFld(e, row, col) {
-      let val = e.path[0].value;
+      let val = e.target.value;
       if (val > this.maxVal) {
         this.mapData[row][col] = this.maxVal;
       } else if (val < this.minVal) {
@@ -69,12 +111,20 @@ export default {
       } else if (val == '') {
         this.mapData[row][col] = this.minVal;
       }
-    }
+      this.$set(this.mapData[row], col, parseInt(this.mapData[row][col], 10));
+      e.target.blur();
+    },
   }
 };
 </script>
 
 <style scoped>
+.active-cell {
+  background-color: red !important;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
+  1px 1px 0 #fff;
+}
+
 .map-table-row {
   display: flex;
 }
@@ -83,17 +133,24 @@ export default {
   background: inherit;
   border: none;
   color: black;
-  width: 41px;
+  width: 40px;
   text-align: center;
   font-weight: bold;
   text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff,
     1px 1px 0 #fff;
 }
 
+.map-table-cell:focus {
+  border: dotted 1px red;
+  background: #fff;
+  width: 34px;
+}
+
 .map-cell-frame {
   border-left: 1px solid gray;
   border-bottom: 1px solid black;
   display: inline-block;
+  background-color: floralwhite;
   width: 42px;
   border-radius: 3px;
 }
@@ -111,12 +168,16 @@ export default {
 
 .map-col-desc {
   width: 42px;
-  background-color: floralwhite;
+  background-color: inherit;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .map-row-desc {
   padding: 1px;
-  background-color: floralwhite;
+  background-color: inherit;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .map-outer-frame {
