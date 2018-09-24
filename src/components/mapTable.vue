@@ -98,6 +98,7 @@ export default {
             cordX: x,
             cordY: y
           });
+        event.target.blur();
         return;
       }
       event.preventDefault();
@@ -112,7 +113,6 @@ export default {
         this.mapData[row][col] = this.minVal;
       }
       this.$set(this.mapData[row], col, parseInt(this.mapData[row][col], 10));
-      e.target.blur();
     },
   }
 };

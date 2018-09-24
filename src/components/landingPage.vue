@@ -1,8 +1,7 @@
 <template>
   <div>
     <h1 v-on:click="updateData()">{{msg}}</h1>
-    <!-- <modal-window>
-    </modal-window>v-if="mapReady" -->
+    <modal-window>
       <map-table 
         :scale-text="scaleText"
         :axis-val-x="axisValX"
@@ -13,7 +12,8 @@
         :hi-light-cel="val"
         @change="onChange($event)"
       ></map-table>
-      <button v-on:click="increment()">increment</button>
+      <!-- <button v-on:click="increment()">increment</button> -->
+    </modal-window>
   </div>
 </template>
 

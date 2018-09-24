@@ -26,25 +26,27 @@ export default {
   },
   methods: {
     onDragStart(event) {
-      this.leftPosStart = event.clientX;
-      this.topPosStart = event.clientY;
-      //event.preventDefault();
+      this.leftPosStart = event.offsetLeft;
+      this.topPosStart = event.offsetTop;
+      event.preventDefault();
       this.clicked = true;
+      document.onmousemove = this.onDrag;
     },
     onDrag(event) {
       if (this.clicked) {
-        //event.preventDefault();
-        let pos1 = this.leftPosStart - event.clientX;
-        let pos2 = this.topPosStart - event.clientY;
-        this.leftPosStart = event.clientX;
-        this.topPosStart = event.clientY;
-
-        this.leftPos = event.target.offsetLeft - pos2;
-        this.topPos = event.target.offsetTop - pos1;
+        event.preventDefault();
+        // let pos1 = this.leftPosStart - event.clientX;
+        // let pos2 = this.topPosStart - event.clientY;
+         
+        //this.topPosStart 
+        console.log(event.clientX - this.leftPosStart, event.clientX, this.leftPosStart)
+        this.leftPos = event.clientX - this.leftPosStart;  //target.offsetLeft - pos2;
+        this.topPos = event.clientY - this.topPosStart; //target.offsetTop - pos1;
       }
     },
     onDragStop(event) {
       this.clicked = false;
+      document.onmousemove = false
     }
   }
 };
