@@ -14,6 +14,19 @@
       ></map-table>
       <!-- <button v-on:click="increment()">increment</button> -->
     </modal-window>
+    <modal-window>
+      <map-table 
+        :scale-text="scaleText"
+        :axis-val-x="axisValX"
+        :axis-val-y="axisValY"
+        :min-val="minVal"
+        :max-val="maxVal"
+        :map-data="fuelMap"
+        :hi-light-cel="val"
+        @change="onChange($event)"
+      ></map-table>
+      <!-- <button v-on:click="increment()">increment</button> -->
+    </modal-window>
   </div>
 </template>
 

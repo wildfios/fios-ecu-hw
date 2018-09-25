@@ -1,13 +1,14 @@
 <template>
   <div>
-    <div
-      class="my-drag"
-      v-on:mousedown="onDragStart($event)" 
-      v-on:mousemove="onDrag($event)"
-      v-on:mouseup="onDragStop($event)"
+    <div 
       v-bind:style="{'left': leftPos + 'px', 'top': topPos + 'px'}"
+      class="window-body"  
     >
-      <slot></slot>
+      <div class="window-header" v-on:mousedown="onDragStart($event)">
+      </div>
+      <div>
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -26,36 +27,48 @@ export default {
   },
   methods: {
     onDragStart(event) {
-      this.leftPosStart = event.offsetLeft;
-      this.topPosStart = event.offsetTop;
       event.preventDefault();
+      this.leftPosStart = event.clientX;
+      this.topPosStart = event.clientY;
       this.clicked = true;
-      document.onmousemove = this.onDrag;
+      window.addEventListener('mousemove', this.onDrag);
+      window.addEventListener('mouseup', this.onDragStop);
     },
     onDrag(event) {
       if (this.clicked) {
         event.preventDefault();
-        // let pos1 = this.leftPosStart - event.clientX;
-        // let pos2 = this.topPosStart - event.clientY;
-         
-        //this.topPosStart 
-        console.log(event.clientX - this.leftPosStart, event.clientX, this.leftPosStart)
-        this.leftPos = event.clientX - this.leftPosStart;  //target.offsetLeft - pos2;
-        this.topPos = event.clientY - this.topPosStart; //target.offsetTop - pos1;
+        
+        let pos1 = - this.leftPosStart + event.clientX;
+        let pos2 = - this.topPosStart + event.clientY;
+      
+        this.leftPosStart = event.clientX;
+        this.topPosStart = event.clientY; 
+
+        this.leftPos += pos1;
+        this.topPos += pos2;
       }
     },
     onDragStop(event) {
       this.clicked = false;
-      document.onmousemove = false
+      window.removeEventListener('mousemove', this.onDrag);
+      window.removeEventListener('mouseup', this.onDragStop);
     }
   }
 };
 </script>
 
 <style scoped>
-.my-drag {
-  padding-top: 26px;
-  background: gray;
-  position: absolute;
-}
+  .window-header {
+    padding-top: 26px;
+    background: lightblue;
+    border: 1px solid gray;
+    display: block;
+  }
+
+  .window-body {
+    position: absolute;
+    background: white;
+    border-radius: 2px;
+    border: solid 1px lightgray;
+  }
 </style>
